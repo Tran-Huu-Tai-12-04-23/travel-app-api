@@ -27,5 +27,7 @@ jobs:
               SSH_HOST: ${{ secrets.SSH_HOST }}
               SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
               SSH_KEY: ${{ secrets.SSH_KEY }}
+              SSH_PASS: ${{ secrets.CLOUD_TRAVEL_APP_PASS }}
            run: |
-              ssh -i $SSH_KEY -p 24700 $SSH_USERNAME@$SSH_HOST "cd /snap/dev-server/travel-app-api && pm2 restart server"
+              sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -p 24700 $SSH_USERNAME@$SSH_HOST "cd ~/snap/dev-server/travel-app-api && pm2 restart server"
+
