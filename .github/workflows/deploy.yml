@@ -33,6 +33,6 @@ jobs:
               'cd ~/snap/dev-server/travel-app-api &&
               git pull &&
               yarn &&
-              pm2 restart server'
+              pm2 restart travel-app-support-api'
        
 
