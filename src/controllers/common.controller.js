@@ -37,7 +37,7 @@ const commonController = {
          const blob = new Blob([imageData.buffer], { type: imageData.contentType });
          formData.append('pic', blob, { filename: imageData.filename, contentType: imageData.contentType });
 
-         const response = await axios.post('http://devtt.top:3001/classify', formData, {
+         const response = await axios.post(process.env.MONGODB_URL.API_MODEL, formData, {
             headers: {
                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
             },
