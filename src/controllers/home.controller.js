@@ -16,7 +16,7 @@ const homeController = {
                return {
                   distanceInfo: helper.getDistance(
                      [userLocation.latitude, userLocation.longitude],
-                     food._doc.coordinates,
+                     food._doc.coordinates.coordinates,
                   ),
                   ...food?._doc,
                };
@@ -25,7 +25,7 @@ const homeController = {
                return {
                   distanceInfo: helper.getDistance(
                      [userLocation.latitude, userLocation.longitude],
-                     location._doc.coordinates,
+                     location._doc.coordinates.coordinates,
                   ),
                   ...location?._doc,
                };
