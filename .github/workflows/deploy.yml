@@ -24,10 +24,6 @@ jobs:
            run: touch ~/.ssh/authorized_keys
          - name: Set permissions
            run: chmod 600 ~/.ssh/authorized_keys
-
-         - name: Add SSH key using ssh-copy-id
-           run: ssh-copy-id -o Port=24700 $SSH_USERNAME@$SSH_HOST
-
          - name: Add SSH known hosts
            run: ssh-keyscan -t rsa $SSH_HOST >> ~/.ssh/authorized_keys
 
