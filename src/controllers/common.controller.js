@@ -69,7 +69,8 @@ const commonController = {
 
          return res.status(400).json({ message: 'Can not recognize this sense!' });
       } catch (error) {
-         return res.status(400).json({ message: error.message });
+         console.log({ message: error.message });
+         return res.status(400).json({ message: 'Can not recognize this sense!' });
       }
    },
 };
