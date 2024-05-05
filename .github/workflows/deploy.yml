@@ -29,7 +29,7 @@ jobs:
               SSH_KEY: ${{ secrets.SSH_KEY }}
               SSH_PASS: ${{ secrets.CLOUD_TRAVEL_APP_PASS }}
            run: |
-              sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -p 24700 $SSH_USERNAME@$SSH_HOST 
+              sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -p 24700 $SSH_USERNAME@$SSH_HOST &&
               'cd ~/snap/dev-server/travel-app-api &&
               git pull &&
               yarn &&
