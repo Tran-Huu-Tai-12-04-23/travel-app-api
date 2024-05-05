@@ -21,7 +21,7 @@ app.use('/api', router);
 db.connectToDatabase().then(function () {
    console.log('DB connect successfully!');
    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`Server is running on port http://localhost:${PORT}`);
       FuncTest();
    });
 });

@@ -73,7 +73,7 @@ const LocationService = {
          let shortestPath = await graph.findShortSchedule(userLocation, locations);
          shortestPath = shortestPath.map((path) => {
             return {
-               from: path.source?.name ?? null,
+               from: path.source ?? null,
                to: path.destination,
                distance: helper.getDistance(
                   path.source?.name ? path.source.coordinates.coordinates : userLocation,
@@ -84,17 +84,21 @@ const LocationService = {
 
          const totalDistance = shortestPath.reduce((acc, item) => acc + item.distance, 0);
 
-         // console.log({
-         //    schedule: shortestPath,
-         //    totalDistance,
-         //    meta: userLocation,
-         // });
          return {
             schedule: shortestPath,
             totalDistance,
          };
       } catch (error) {
          throw error;
+      }
+   },
+
+   getLocationFromLabe: async (label) => {
+      try {
+         const location = await Location.findOne({ label: label });
+         return location;
+      } catch (error) {
+         throw new Error(error.message);
       }
    },
 };

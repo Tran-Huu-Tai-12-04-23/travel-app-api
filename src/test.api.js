@@ -41,17 +41,28 @@ const FuncTest = async () => {
       //   console.log(locations);
       //   console.log(foods);
       //    test suggest for user
-      const userLocation = {
-         latitude: 10.7739888,
-         longitude: 106.7010858,
-      };
+      // const userLocation = {
+      //    latitude: 10.7739888,
+      //    longitude: 106.7010858,
+      // };
       // const foods = await FoodService.scheduleFood(userLocation);
       // const locations = await LocationService.scheduleLocation(userLocation);
-
+      // console.group('di an thoi bat dau tai => ', 'dia diem cua ban');
+      // foods.schedule.forEach((element) => {
+      //    console.log('from => ', element.from?.name ?? 'dia diem cua ban');
+      //    console.log('to => ', element.to?.name);
+      // });
+      // console.groupEnd('Ve nha thoi => ', 'dia diem cua ban');
+      // console.group('di du lich thoi bat dau tai => ', 'dia diem cua ban');
+      // locations.schedule.forEach((element) => {
+      //    console.log('from => ', element.from?.name ?? 'dia diem cua ban');
+      //    console.log('to => ', element.to?.name);
+      // });
       // console.log({
       //    foods,
       //    locations,
       // });
+      // console.groupEnd('Ve nha thoi => ', 'dia diem cua ban');
    } catch (error) {
       console.log(error);
    }

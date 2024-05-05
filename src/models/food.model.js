@@ -10,6 +10,10 @@ const foodSchema = new Schema({
       type: String,
       required: true,
    },
+   label: {
+      type: String,
+      required: true,
+   },
    coordinates: {
       type: {
          type: String,
@@ -44,5 +48,6 @@ const foodSchema = new Schema({
 });
 
 const Food = mongoose.model('Food', foodSchema);
+foodSchema.index({ coordinates: '2dsphere' });
 
 module.exports = Food;

@@ -32,6 +32,10 @@ const locationSchema = new mongoose.Schema({
       type: String,
       default: null,
    },
+   label: {
+      type: String,
+      required: true,
+   },
    createdAt: {
       type: Date,
       default: Date.now,
@@ -39,5 +43,5 @@ const locationSchema = new mongoose.Schema({
 });
 
 const Location = mongoose.model('Location', locationSchema);
-
+locationSchema.index({ coordinates: '2dsphere' });
 module.exports = Location;

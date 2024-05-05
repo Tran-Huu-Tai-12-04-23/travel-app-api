@@ -10,7 +10,7 @@ const homeController = {
 
          if (userLocation) {
             const topFoodNearest = await FoodService.findNearestFood(userLocation, 100, 10);
-            const topLocationNearest = await LocationService.findNearestLocations(userLocation, 100, 10)();
+            const topLocationNearest = await LocationService.findNearestLocations(userLocation, 100, 10);
             const newFoods = topFoodNearest.map((food) => {
                return {
                   distanceInfo: helper.getDistance(
@@ -42,6 +42,7 @@ const homeController = {
 
          return res.json({ foods: latestTopTenFood, locations: latestTopTenLocation });
       } catch (err) {
+         console.log(err);
          return res.status(500).json(err.message);
       }
    },
