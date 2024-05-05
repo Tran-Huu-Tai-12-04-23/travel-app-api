@@ -28,8 +28,4 @@ jobs:
               SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
               SSH_KEY: ${{ secrets.SSH_KEY }}
            run: |
-                ssh -o StrictHostKeyChecking=no \
-                    -i ${{ runner.workspace }}/${{ secrets.SSH_KEY }} \
-                    -p 24700 \
-                    ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
-                    "cd ~/snap/dev-server/travel-app-api && pm2 restart server"
+              ssh -i $SSH_KEY -p 24700 $SSH_USERNAME@$SSH_HOST "cd /snap/dev-server/travel-app-api && pm2 restart server"
