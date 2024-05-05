@@ -28,4 +28,4 @@ jobs:
               SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
               SSH_KEY: ${{ secrets.SSH_KEY }}
            run: |
-              ssh $SSH_USERNAME@$SSH_HOST "cd /snap/dev-server/travel-app-api && pm2 restart server"
+              ssh -p 24700 $SSH_USERNAME@$SSH_HOST "cd /snap/dev-server/travel-app-api && pm2 restart server"
