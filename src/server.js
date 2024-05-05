@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-   res.status(400).send('HUUTAI CI/CD');
+   res.status(400).send('HUUTAI CI/CD fix issue');
 });
 app.use('/api', router);
 
