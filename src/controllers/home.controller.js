@@ -8,23 +8,22 @@ const homeController = {
       try {
          const { userLocation } = req.body;
 
-         const latestTopTenFood = await FoodService.getLatestTopTenFood();
-         const latestTopTenLocation = await LocationService.getLatestTopTenLocation();
-
          if (userLocation) {
-            const newFoods = latestTopTenFood.map((food) => {
+            const topFoodNearest = await FoodService.findNearestFood(userLocation, 100, 10);
+            const topLocationNearest = await LocationService.findNearestLocations(userLocation, 100, 10)();
+            const newFoods = topFoodNearest.map((food) => {
                return {
                   distanceInfo: helper.getDistance(
-                     [userLocation.latitude, userLocation.longitude],
+                     [userLocation.longitude, userLocation.latitude],
                      food._doc.coordinates.coordinates,
                   ),
                   ...food?._doc,
                };
             });
-            const newLocations = latestTopTenLocation.map((location) => {
+            const newLocations = topLocationNearest.map((location) => {
                return {
                   distanceInfo: helper.getDistance(
-                     [userLocation.latitude, userLocation.longitude],
+                     [userLocation.longitude, userLocation.latitude],
                      location._doc.coordinates.coordinates,
                   ),
                   ...location?._doc,
@@ -36,6 +35,10 @@ const homeController = {
                locations: newLocations,
             });
          }
+         //  when not provide location
+
+         const latestTopTenFood = await FoodService.getLatestTopTenFood();
+         const latestTopTenLocation = await LocationService.getLatestTopTenLocation();
 
          return res.json({ foods: latestTopTenFood, locations: latestTopTenLocation });
       } catch (err) {

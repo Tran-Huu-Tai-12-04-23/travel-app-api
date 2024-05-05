@@ -9,7 +9,7 @@ const foodController = {
             return res.status(400).json({ message: 'Invalid user location' });
          }
 
-         return FoodService.findNearLestFood(userLocation, distance, limit);
+         return FoodService.findNearestFood(userLocation, distance, limit);
       } catch (error) {
          return res.status(400).json({ message: error.message });
       }

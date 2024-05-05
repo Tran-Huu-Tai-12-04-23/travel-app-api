@@ -9,7 +9,7 @@ const locationController = {
             return res.status(400).json({ message: 'Invalid user location' });
          }
 
-         return LocationService.findNearbyLocations(userLocation, distance, limit);
+         return LocationService.findNearestLocations(userLocation, distance, limit);
       } catch (error) {
          return res.status(400).json({ message: error.message });
       }

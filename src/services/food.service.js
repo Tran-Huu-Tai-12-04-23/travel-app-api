@@ -1,3 +1,5 @@
+const Graph = require('../Alg/Graph');
+const helper = require('../helper');
 const Food = require('../models/food.model');
 
 const FoodService = {
@@ -34,7 +36,7 @@ const FoodService = {
       }
    },
 
-   findNearLestFood: async (location, distance = 8, limit = 10000000) => {
+   findNearestFood: async (location, distance = 8, limit = 10000000) => {
       try {
          const point = {
             type: 'Point',
@@ -56,6 +58,43 @@ const FoodService = {
             });
       } catch (err) {
          throw err;
+      }
+   },
+
+   predictFood: async () => {
+      return null;
+   },
+
+   scheduleFood: async (userLocation) => {
+      try {
+         if (!userLocation) throw new Error('User location invalid!');
+         let foods = await FoodService.findNearestFood(userLocation, 1000, 4);
+         const graph = new Graph();
+         let shortestPath = await graph.findShortSchedule(userLocation, foods);
+         shortestPath = shortestPath.map((path) => {
+            return {
+               from: path.source?.name ?? null,
+               to: path.destination,
+               distance: helper.getDistance(
+                  path.source?.name ? path.source.coordinates.coordinates : userLocation,
+                  path.destination.coordinates.coordinates,
+               ).distanceInKilometers,
+            };
+         });
+
+         const totalDistance = shortestPath.reduce((acc, item) => acc + item.distance, 0);
+
+         // console.log({
+         //    schedule: shortestPath,
+         //    totalDistance,
+         //    meta: userLocation,
+         // });
+         return {
+            schedule: shortestPath,
+            totalDistance,
+         };
+      } catch (error) {
+         throw error;
       }
    },
 };
