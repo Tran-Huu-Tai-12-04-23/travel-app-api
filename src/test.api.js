@@ -5,24 +5,24 @@ const FoodService = require('./services/food.service');
 
 const FuncTest = async () => {
    try {
-      // locations.forEach(async (location) => {
-      //    await LocationService.createLocation({
-      //       ...location,
-      //       coordinates: {
-      //          type: 'Point',
-      //          coordinates: [location.coordinates[1], location.coordinates[0]],
-      //       },
-      //    });
-      // }),
-      //    foods.forEach(async (food) => {
-      //       await FoodService.createFood({
-      //          ...food,
-      //          coordinates: {
-      //             type: 'Point',
-      //             coordinates: [food.coordinates[1], food.coordinates[0]],
-      //          },
-      //       });
-      //    });
+      locations.forEach(async (location) => {
+         await LocationService.createLocation({
+            ...location,
+            coordinates: {
+               type: 'Point',
+               coordinates: [location.coordinates[0], location.coordinates[1]],
+            },
+         });
+      }),
+         foods.forEach(async (food) => {
+            await FoodService.createFood({
+               ...food,
+               coordinates: {
+                  type: 'Point',
+                  coordinates: [food.coordinates[0], food.coordinates[1]],
+               },
+            });
+         });
       // const locationss = await LocationService.getLatestTopTenLocation();
       //   const locations = await LocationService.findNearestLocations(
       //      {

@@ -40,7 +40,7 @@ const LocationService = {
       try {
          const point = {
             type: 'Point',
-            coordinates: [location?.longitude, location?.latitude],
+            coordinates: [location?.latitude, location?.longitude],
          };
          const maxDistance = distance * 1000;
 

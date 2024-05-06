@@ -14,7 +14,7 @@ const homeController = {
             const newFoods = topFoodNearest.map((food) => {
                return {
                   distanceInfo: helper.getDistance(
-                     [userLocation.longitude, userLocation.latitude],
+                     [userLocation.latitude, userLocation.longitude],
                      food._doc.coordinates.coordinates,
                   ),
                   ...food?._doc,
@@ -23,7 +23,7 @@ const homeController = {
             const newLocations = topLocationNearest.map((location) => {
                return {
                   distanceInfo: helper.getDistance(
-                     [userLocation.longitude, userLocation.latitude],
+                     [userLocation.latitude, userLocation.longitude],
                      location._doc.coordinates.coordinates,
                   ),
                   ...location?._doc,
