@@ -13,7 +13,7 @@ const FoodService = {
          const newFood = new Food({ ...food });
          return await newFood.save();
       } catch (err) {
-         throw err;
+         throw new Error(err.message);
       }
    },
 
@@ -22,17 +22,17 @@ const FoodService = {
          const latestFoods = await Food.find().sort({ createdAt: -1 }).limit(10);
          return latestFoods;
       } catch (err) {
-         throw err;
+         throw new Error(err.message);
       }
    },
 
    getFoodById: async (id) => {
       try {
-         const food = await Food.findOneById(id);
+         const food = await Food.findById(id);
          if (!food) throw new Error('Food not found!');
          return food;
       } catch (err) {
-         throw err;
+         throw new Error(err.message);
       }
    },
 
@@ -40,15 +40,17 @@ const FoodService = {
       try {
          const point = {
             type: 'Point',
-            coordinates: [location?.latitude, location?.longitude],
+            coordinates: location, // issues revers index for long tatue
          };
          const maxDistance = distance * 1000;
+         const minDistance = 1;
 
          return Food.find({
             coordinates: {
                $near: {
                   $geometry: point,
                   $maxDistance: maxDistance,
+                  $minDistance: minDistance,
                },
             },
          })
@@ -57,7 +59,7 @@ const FoodService = {
                distance: 1,
             });
       } catch (err) {
-         throw err;
+         throw new Error(err.message);
       }
    },
 
@@ -65,18 +67,18 @@ const FoodService = {
       return null;
    },
 
-   scheduleFood: async (userLocation) => {
+   scheduleFood: async (location) => {
       try {
-         if (!userLocation) throw new Error('User location invalid!');
-         let foods = await FoodService.findNearestFood(userLocation, 1000, 4);
+         if (!location) throw new Error('User location invalid!');
+         let foods = await FoodService.findNearestFood(location, 1000, 4);
          const graph = new Graph();
-         let shortestPath = await graph.findShortSchedule(userLocation, foods);
+         let shortestPath = await graph.findShortSchedule(location, foods);
          shortestPath = shortestPath.map((path) => {
             return {
                from: path.source ?? null,
                to: path.destination,
-               distance: helper.getDistance(
-                  path.source?.name ? path.source.coordinates.coordinates : userLocation,
+               distance: helper.getDistanceFromArr(
+                  path.source?.name ? path.source.coordinates.coordinates : location,
                   path.destination.coordinates.coordinates,
                ).distanceInKilometers,
             };
@@ -89,7 +91,7 @@ const FoodService = {
             totalDistance,
          };
       } catch (error) {
-         throw error;
+         throw new Error(err.message);
       }
    },
 

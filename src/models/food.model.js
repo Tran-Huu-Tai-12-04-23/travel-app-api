@@ -48,6 +48,6 @@ const foodSchema = new Schema({
 });
 
 const Food = mongoose.model('Food', foodSchema);
-// foodSchema.index({ coordinates: '2dsphere' });
+foodSchema.index({ coordinates: '2dsphere' });
 
 module.exports = Food;

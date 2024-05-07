@@ -6,27 +6,21 @@ const LocationService = require('../services/location.service');
 const homeController = {
    getHomeData: async (req, res) => {
       try {
-         const { userLocation } = req.body;
+         const { location } = req.body;
 
-         if (userLocation) {
-            const topFoodNearest = await FoodService.findNearestFood(userLocation, 100, 10);
-            const topLocationNearest = await LocationService.findNearestLocations(userLocation, 100, 10);
+         if (location) {
+            const topFoodNearest = await FoodService.findNearestFood(location, 100, 10);
+            const topLocationNearest = await LocationService.findNearestLocations(location, 100, 10);
             const newFoods = topFoodNearest.map((food) => {
                return {
-                  distanceInfo: helper.getDistance(
-                     [userLocation.latitude, userLocation.longitude],
-                     food._doc.coordinates.coordinates,
-                  ),
+                  distanceInfo: helper.getDistanceFromArr(location, food.coordinates.coordinates),
                   ...food?._doc,
                };
             });
-            const newLocations = topLocationNearest.map((location) => {
+            const newLocations = topLocationNearest.map((lc) => {
                return {
-                  distanceInfo: helper.getDistance(
-                     [userLocation.latitude, userLocation.longitude],
-                     location._doc.coordinates.coordinates,
-                  ),
-                  ...location?._doc,
+                  distanceInfo: helper.getDistanceFromArr(location, lc.coordinates.coordinates),
+                  ...lc?._doc,
                };
             });
 

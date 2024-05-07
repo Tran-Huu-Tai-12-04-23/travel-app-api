@@ -89,19 +89,22 @@ class Graph {
       );
    }
 
-   async initGraph(userLocation, locations) {
-      const roots = { ...userLocation, _id: '-1' };
+   async initGraph(location, locations) {
+      const roots = { ...location, _id: '-1' };
       //   add path from root
       for (let i = 0; i < locations.length; i++) {
          const location = locations[i];
-         const weight = helper.getDistance(userLocation, location.coordinates.coordinates);
+         const weight = helper.getDistanceFromArr(location, {
+            latitude: location.coordinates.coordinates[1],
+            longitude: location.coordinates.coordinates[0],
+         });
          this.addEdge(roots, location, weight.distanceInKilometers);
          this.addEdge(location, roots, weight.distanceInKilometers);
 
          for (let j = 0; j < locations.length; j++) {
             const subLocation = locations[j];
             if (subLocation._id.toString() !== location._id.toString()) {
-               const subWeight = helper.getDistance(
+               const subWeight = helper.getDistanceFromArr(
                   subLocation.coordinates.coordinates,
                   location.coordinates.coordinates,
                );
@@ -113,8 +116,8 @@ class Graph {
       //
    }
 
-   async findShortSchedule(userLocation, foods) {
-      await this.initGraph(userLocation, foods);
+   async findShortSchedule(location, foods) {
+      await this.initGraph(location, foods);
       const root = this.getRootShortPath('-1');
       return await this.findShortestPathThroughAllLocation(root);
    }

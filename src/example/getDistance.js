@@ -10,7 +10,7 @@ const point2 = {
    longitude: 106.69644894755736,
 };
 
-const distanceInMeters = geolib.getDistance(point1, point2);
+const distanceInMeters = geolib.getDistanceFromArr(point1, point2);
 const distanceInKilometers = distanceInMeters / 1000;
 
 console.log(distanceInKilometers + ' km');

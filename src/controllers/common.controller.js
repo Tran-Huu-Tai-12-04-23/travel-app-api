@@ -6,16 +6,17 @@ const axios = require('axios');
 const commonController = {
    suggestScheduleForUser: async (req, res) => {
       try {
-         const { userLocation } = req.body;
-         if (!userLocation) return res.status(400).json({ message: 'User location not  found!' });
+         const { location } = req.body;
+         // location is [longitude, latitude]
+         if (!location) return res.status(400).json({ message: 'User location not  found!' });
 
-         const foods = await foodService.suggestFood(userLocation);
-         const locations = await locationService.suggestLocation(userLocation);
+         const foods = await foodService.suggestFood(location);
+         const locations = await locationService.suggestLocation(location);
 
          return res.json({
             scheduleFoods: foods,
             scheduleLocations: locations,
-            meta: userLocation,
+            meta: location,
          });
       } catch (error) {
          return res.status(400).json({ message: err.message });
@@ -24,46 +25,44 @@ const commonController = {
 
    predictImg: async (req, res) => {
       try {
-         if (!req.file) {
-            return res.status(400).json({ error: 'Không có ảnh được tải lên' });
-         }
-         const { userLocation } = req.body;
+         const { location, image_url } = req.body;
 
-         if (!userLocation) return res.status(400).json({ message: 'User location not  found!' });
-
+         if (!image_url) return res.status(404).json({ message: 'Please provided image!' });
+         // location is [longitude, latitude]
          //   ==============
-         const imageData = req.file;
-         const formData = new FormData();
-         const blob = new Blob([imageData.buffer], { type: imageData.contentType });
-         formData.append('pic', blob, { filename: imageData.filename, contentType: imageData.contentType });
-
-         const response = await axios.post(process.env.MONGODB_URL.API_MODEL, formData, {
-            headers: {
-               'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+         const response = await axios.post(
+            process.env.API_MODEL,
+            { image_url },
+            {
+               headers: {
+                  'Content-Type': 'application/json',
+               },
             },
-         });
+         );
 
          const { result } = response.data;
 
          if (!result) return res.status(404).json({ message: 'Location not found!' });
 
-         const location = await locationService.getLocationFromLabe(result);
+         const locationLabel = await locationService.getLocationFromLabe(result);
          const food = await locationService.getLocationFromLabe(result);
 
          if (location)
             return res.json({
-               location: location,
+               location: locationLabel,
                food: null,
-               distance: helper.getDistance(userLocation, location.coordinates.coordinates),
-               userLocation: userLocation,
+               distance: location
+                  ? helper.getDistanceFromArr(location, locationLabel._doc.coordinates.coordinates)
+                  : null,
+               meta: location,
             });
 
          if (food) {
             return res.json({
                food: food,
                location: null,
-               distance: helper.getDistance(userLocation, location.coordinates.coordinates),
-               userLocation: userLocation,
+               distance: location ? helper.getDistanceFromArr(location, food._doc.coordinates.coordinates) : null,
+               meta: location,
             });
          }
 

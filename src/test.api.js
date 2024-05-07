@@ -5,24 +5,24 @@ const FoodService = require('./services/food.service');
 
 const FuncTest = async () => {
    try {
-      locations.forEach(async (location) => {
-         await LocationService.createLocation({
-            ...location,
-            coordinates: {
-               type: 'Point',
-               coordinates: [location.coordinates[0], location.coordinates[1]],
-            },
-         });
-      }),
-         foods.forEach(async (food) => {
-            await FoodService.createFood({
-               ...food,
-               coordinates: {
-                  type: 'Point',
-                  coordinates: [food.coordinates[0], food.coordinates[1]],
-               },
-            });
-         });
+      // locations.forEach(async (location) => {
+      //    await LocationService.createLocation({
+      //       ...location,
+      //       coordinates: {
+      //          type: 'Point',
+      //          coordinates: [location.coordinates[1], location.coordinates[0]],
+      //       },
+      //    });
+      // }),
+      //    foods.forEach(async (food) => {
+      //       await FoodService.createFood({
+      //          ...food,
+      //          coordinates: {
+      //             type: 'Point',
+      //             coordinates: [food.coordinates[1], food.coordinates[0]],
+      //          },
+      //       });
+      //    });
       // const locationss = await LocationService.getLatestTopTenLocation();
       //   const locations = await LocationService.findNearestLocations(
       //      {
@@ -41,12 +41,12 @@ const FuncTest = async () => {
       //   console.log(locations);
       //   console.log(foods);
       //    test suggest for user
-      // const userLocation = {
+      // const location = {
       //    latitude: 10.7739888,
       //    longitude: 106.7010858,
       // };
-      // const foods = await FoodService.scheduleFood(userLocation);
-      // const locations = await LocationService.scheduleLocation(userLocation);
+      // const foods = await FoodService.scheduleFood(location);
+      // const locations = await LocationService.scheduleLocation(location);
       // console.group('di an thoi bat dau tai => ', 'dia diem cua ban');
       // foods.schedule.forEach((element) => {
       //    console.log('from => ', element.from?.name ?? 'dia diem cua ban');
