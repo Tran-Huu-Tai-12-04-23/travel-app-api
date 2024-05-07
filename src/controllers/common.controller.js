@@ -4,17 +4,30 @@ const locationService = require('../services/location.service');
 const axios = require('axios');
 
 const commonController = {
-   suggestScheduleForUser: async (req, res) => {
+   suggestScheduleFoodTourForUser: async (req, res) => {
       try {
          const { location } = req.body;
          // location is [longitude, latitude]
          if (!location) return res.status(400).json({ message: 'User location not  found!' });
 
          const foods = await foodService.scheduleFood(location);
+         return res.json({
+            scheduleFoods: foods,
+            meta: location,
+         });
+      } catch (error) {
+         return res.status(400).json({ message: error.message });
+      }
+   },
+   suggestScheduleLocationTourForUser: async (req, res) => {
+      try {
+         const { location } = req.body;
+         // location is [longitude, latitude]
+         if (!location) return res.status(400).json({ message: 'User location not  found!' });
+
          const locations = await locationService.scheduleLocation(location);
 
          return res.json({
-            scheduleFoods: foods,
             scheduleLocations: locations,
             meta: location,
          });
