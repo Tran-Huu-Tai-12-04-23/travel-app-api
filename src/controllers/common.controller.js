@@ -10,8 +10,8 @@ const commonController = {
          // location is [longitude, latitude]
          if (!location) return res.status(400).json({ message: 'User location not  found!' });
 
-         const foods = await foodService.suggestFood(location);
-         const locations = await locationService.suggestLocation(location);
+         const foods = await foodService.scheduleFood(location);
+         const locations = await locationService.scheduleLocation(location);
 
          return res.json({
             scheduleFoods: foods,
@@ -19,7 +19,7 @@ const commonController = {
             meta: location,
          });
       } catch (error) {
-         return res.status(400).json({ message: err.message });
+         return res.status(400).json({ message: error.message });
       }
    },
 
