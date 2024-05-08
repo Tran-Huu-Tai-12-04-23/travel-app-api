@@ -39,10 +39,10 @@ const FuncTest = async () => {
 
       // const locations = await LocationService.scheduleLocation(location);
       // console.group('di an thoi bat dau tai => ', 'dia diem cua ban');
-      // foods.schedule.forEach((element) => {
-      //    console.log('from => ', element.from?.name ?? 'dia diem cua ban');
-      //    console.log('to => ', element.to?.name);
-      // });
+      foods.schedule.forEach((element) => {
+         console.log('from => ', element.from?.name ?? 'dia diem cua ban');
+         console.log('to => ', element.to?.name);
+      });
       // console.groupEnd('Ve nha thoi => ', 'dia diem cua ban');
       // console.group('di du lich thoi bat dau tai => ', 'dia diem cua ban');
       // locations.schedule.forEach((element) => {

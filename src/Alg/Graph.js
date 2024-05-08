@@ -13,7 +13,7 @@ class Graph {
    }
 
    addEdge(source, destination, weight) {
-      // console.log({ source: source._id.toString(), destination: destination._id.toString(), weight });
+      // console.log({ source: source.name, destination: destination.name, weight });
       if (!this.adjacencyList.has(source._id.toString())) {
          this.adjacencyList.set(source._id.toString(), []);
       }
@@ -77,20 +77,22 @@ class Graph {
       if (this.checkExistVisited(minEdge, visited)) {
          return null;
       }
+
+      // console.log('min eeee ===== ', minEdge);
       return minEdge;
    }
    checkExistVisited(vertex, visited) {
       return !!visited.find(
          (v) =>
-            (v.source === vertex.source?._id.toString() &&
+            (v.source?._id.toString() === vertex.source?._id.toString() &&
                v.destination?._id.toString() === vertex.destination?._id.toString()) ||
-            (v.source === vertex.destination?._id.toString() &&
+            (v.source?._id.toString() === vertex.destination?._id.toString() &&
                v.destination?._id.toString() === vertex.source?._id.toString()),
       );
    }
 
    async initGraph(rootLocation, locations) {
-      const roots = { ...rootLocation, _id: '-1' };
+      const roots = { ...rootLocation, _id: '-1123123123' };
       //   add path from root
       for (let i = 0; i < locations.length; i++) {
          const location = locations[i];
@@ -115,7 +117,9 @@ class Graph {
 
    async findShortSchedule(location, foods) {
       await this.initGraph(location, foods);
-      const root = this.getRootShortPath('-1');
+      // console.log(this.adjacencyList);
+      const root = this.getRootShortPath('-1123123123');
+      // console.log('root : ' + root._id);
       return await this.findShortestPathThroughAllLocation(root);
    }
 }
