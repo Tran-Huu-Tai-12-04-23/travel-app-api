@@ -31,21 +31,12 @@ const FuncTest = async () => {
       //      },
       //      2,
       //   );
-      //   const foods = await FoodService.findNearestFood(
-      //      {
-      //         longitude: '106.772666',
-      //         latitude: '10.7933689',
-      //      },
-      //      2,
-      //   );
+      const location = [106.68507499797778, 10.743321644716596];
+      // const foods = await FoodService.findNearestFood(location, 1000, 4);
       //   console.log(locations);
-      //   console.log(foods);
       //    test suggest for user
-      // const location = {
-      //    latitude: 10.7739888,
-      //    longitude: 106.7010858,
-      // };
-      // const foods = await FoodService.scheduleFood(location);
+      const foods = await FoodService.scheduleFood(location);
+
       // const locations = await LocationService.scheduleLocation(location);
       // console.group('di an thoi bat dau tai => ', 'dia diem cua ban');
       // foods.schedule.forEach((element) => {

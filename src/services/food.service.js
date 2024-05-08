@@ -91,7 +91,7 @@ const FoodService = {
             totalDistance,
          };
       } catch (error) {
-         throw new Error(err.message);
+         throw new Error(error.message);
       }
    },
 

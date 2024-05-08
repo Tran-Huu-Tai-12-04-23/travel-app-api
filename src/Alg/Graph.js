@@ -89,15 +89,12 @@ class Graph {
       );
    }
 
-   async initGraph(location, locations) {
-      const roots = { ...location, _id: '-1' };
+   async initGraph(rootLocation, locations) {
+      const roots = { ...rootLocation, _id: '-1' };
       //   add path from root
       for (let i = 0; i < locations.length; i++) {
          const location = locations[i];
-         const weight = helper.getDistanceFromArr(location, {
-            latitude: location.coordinates.coordinates[1],
-            longitude: location.coordinates.coordinates[0],
-         });
+         const weight = helper.getDistanceFromArr(rootLocation, location.coordinates.coordinates);
          this.addEdge(roots, location, weight.distanceInKilometers);
          this.addEdge(location, roots, weight.distanceInKilometers);
 
