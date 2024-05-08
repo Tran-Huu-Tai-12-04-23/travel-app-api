@@ -1,6 +1,7 @@
 const Graph = require('../Alg/Graph');
 const helper = require('../helper');
 const Food = require('../models/food.model');
+const GoogleMapService = require('./google.map.service');
 
 const FoodService = {
    createFood: async (food) => {
@@ -63,28 +64,26 @@ const FoodService = {
       }
    },
 
-   predictFood: async () => {
-      return null;
-   },
-
    scheduleFood: async (location) => {
       try {
          if (!location) throw new Error('User location invalid!');
          let foods = await FoodService.findNearestFood(location, 1000, 4);
          const graph = new Graph();
          let shortestPath = await graph.findShortSchedule(location, foods);
-         shortestPath = shortestPath.map((path) => {
-            return {
-               from: path.source ?? null,
-               to: path.destination,
-               distance: helper.getDistanceFromArr(
-                  path.source?.name ? path.source.coordinates.coordinates : location,
-                  path.destination.coordinates.coordinates,
-               ).distanceInKilometers,
-            };
-         });
+         shortestPath = await Promise.all(
+            shortestPath.map(async (path) => {
+               return {
+                  from: path.source ?? null,
+                  to: path.destination,
+                  distance: await GoogleMapService.getDistance(
+                     path.source?.name ? path.source.coordinates.coordinates : location,
+                     path.destination.coordinates.coordinates,
+                  ),
+               };
+            }),
+         );
 
-         const totalDistance = shortestPath.reduce((acc, item) => acc + item.distance, 0);
+         const totalDistance = shortestPath.reduce((acc, item) => acc + item.distance?.distanceKiloMetres?.value, 0);
 
          return {
             schedule: shortestPath,

@@ -1,5 +1,6 @@
 const helper = require('../helper');
 const foodService = require('../services/food.service');
+const GoogleMapService = require('../services/google.map.service');
 const locationService = require('../services/location.service');
 const axios = require('axios');
 
@@ -60,21 +61,23 @@ const commonController = {
          const locationLabel = await locationService.getLocationFromLabe(result);
          const food = await locationService.getLocationFromLabe(result);
 
-         if (location)
+         if (location) {
+            const distanceInfo = await GoogleMapService.getDistance(
+               location,
+               locationLabel._doc.coordinates.coordinates,
+            );
             return res.json({
-               location: locationLabel,
+               location: { ...locationLabel._doc, distanceInfo },
                food: null,
-               distance: location
-                  ? helper.getDistanceFromArr(location, locationLabel._doc.coordinates.coordinates)
-                  : null,
                meta: location,
             });
+         }
 
          if (food) {
+            const distanceInfo = await GoogleMapService.getDistance(location, food._doc.coordinates.coordinates);
             return res.json({
-               food: food,
+               food: { ...food._doc, distanceInfo },
                location: null,
-               distance: location ? helper.getDistanceFromArr(location, food._doc.coordinates.coordinates) : null,
                meta: location,
             });
          }

@@ -1,4 +1,5 @@
 const helper = require('../helper');
+const GoogleMapService = require('../services/google.map.service');
 class Edge {
    constructor(source, destination, weight) {
       this.source = source;
@@ -96,18 +97,22 @@ class Graph {
       //   add path from root
       for (let i = 0; i < locations.length; i++) {
          const location = locations[i];
-         const weight = helper.getDistanceFromArr(rootLocation, location.coordinates.coordinates);
-         this.addEdge(roots, location, weight.distanceInKilometers);
-         this.addEdge(location, roots, weight.distanceInKilometers);
+         const weight = await GoogleMapService.getDistance(rootLocation, location.coordinates.coordinates);
+         this.addEdge(roots, location, weight?.distanceKiloMetres ? weight.distanceKiloMetres.value : 0 + i);
+         this.addEdge(location, roots, weight?.distanceKiloMetres ? weight.distanceKiloMetres.value : 0 + i);
 
          for (let j = 0; j < locations.length; j++) {
             const subLocation = locations[j];
             if (subLocation._id.toString() !== location._id.toString()) {
-               const subWeight = helper.getDistanceFromArr(
+               const subWeight = GoogleMapService.getDistance(
                   subLocation.coordinates.coordinates,
                   location.coordinates.coordinates,
                );
-               this.addEdge(location, subLocation, subWeight.distanceInKilometers);
+               this.addEdge(
+                  location,
+                  subLocation,
+                  subWeight?.distanceKiloMetres ? subWeight?.distanceKiloMetres.value : 0 + i + j,
+               );
             }
          }
       }

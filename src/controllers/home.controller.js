@@ -1,6 +1,7 @@
 const helper = require('../helper');
 const authService = require('../services/auth.service');
 const FoodService = require('../services/food.service');
+const GoogleMapService = require('../services/google.map.service');
 const LocationService = require('../services/location.service');
 
 const homeController = {
@@ -11,18 +12,25 @@ const homeController = {
          if (location) {
             const topFoodNearest = await FoodService.findNearestFood(location, 100, 10);
             const topLocationNearest = await LocationService.findNearestLocations(location, 100, 10);
-            const newFoods = topFoodNearest.map((food) => {
+
+            const foodPromises = topFoodNearest.map(async (food) => {
+               const data = await GoogleMapService.getDistance(location, food.coordinates.coordinates);
                return {
-                  distanceInfo: helper.getDistanceFromArr(location, food.coordinates.coordinates),
+                  distanceInfo: data,
                   ...food?._doc,
                };
             });
-            const newLocations = topLocationNearest.map((lc) => {
+
+            const locationPromises = topLocationNearest.map(async (lc) => {
+               const data = await GoogleMapService.getDistance(location, lc.coordinates.coordinates);
                return {
-                  distanceInfo: helper.getDistanceFromArr(location, lc.coordinates.coordinates),
+                  distanceInfo: data,
                   ...lc?._doc,
                };
             });
+
+            const newFoods = await Promise.all(foodPromises);
+            const newLocations = await Promise.all(locationPromises);
 
             return res.json({
                foods: newFoods,

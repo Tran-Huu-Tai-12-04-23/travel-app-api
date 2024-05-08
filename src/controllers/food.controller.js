@@ -1,5 +1,6 @@
 const helper = require('../helper');
 const FoodService = require('../services/food.service');
+const GoogleMapService = require('../services/google.map.service');
 
 const foodController = {
    findNearest: async (req, res) => {
@@ -17,7 +18,7 @@ const foodController = {
          foods = foods.map((food) => {
             return {
                ...food,
-               distanceInfo: helper.getDistanceFromArr(location, food.coordinates.coordinates),
+               distanceInfo: GoogleMapService.getDistance(location, food.coordinates.coordinates),
             };
          });
 
@@ -39,15 +40,20 @@ const foodController = {
          if (!food) res.status(404).json({ message: 'Food not found!' });
          // get near by food
          let foods = await FoodService.findNearestFood(food.coordinates.coordinates, 10, 4);
-         foods = foods.map((fd) => {
-            return {
-               ...fd._doc,
-               distanceInfo: helper.getDistanceFromArr(food._doc.coordinates.coordinates, fd.coordinates.coordinates),
-            };
-         });
+         foods = await Promise.all(
+            foods.map(async (fd) => {
+               return {
+                  ...fd._doc,
+                  distanceInfo: await GoogleMapService.getDistance(
+                     food._doc.coordinates.coordinates,
+                     fd.coordinates.coordinates,
+                  ),
+               };
+            }),
+         );
          return res.json({
             currentFood: food,
-            nearFoods: foods.sort((a, b) => a.distanceInfo.distanceKi - b.distanceInfo.distance),
+            nearFoods: foods,
          });
       } catch (error) {
          console.log(error);

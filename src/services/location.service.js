@@ -1,6 +1,7 @@
 const Graph = require('../Alg/Graph');
 const helper = require('../helper');
 const Location = require('../models/location.model');
+const GoogleMapService = require('./google.map.service');
 
 const LocationService = {
    createLocation: async (location) => {
@@ -63,35 +64,33 @@ const LocationService = {
       }
    },
 
-   predictLocation: async () => {
-      return null;
-   },
-
    scheduleLocation: async (location) => {
       try {
          if (!location) throw new Error('User location invalid!');
          let locations = await LocationService.findNearestLocations(location, 1000, 4);
          const graph = new Graph();
          let shortestPath = await graph.findShortSchedule(location, locations);
-         shortestPath = shortestPath.map((path) => {
-            return {
-               from: path.source ?? null,
-               to: path.destination,
-               distance: helper.getDistanceFromArr(
-                  path.source?.name ? path.source.coordinates.coordinates : location,
-                  path.destination.coordinates.coordinates,
-               ).distanceInKilometers,
-            };
-         });
+         shortestPath = await Promise.all(
+            shortestPath.map(async (path) => {
+               return {
+                  from: path.source ?? null,
+                  to: path.destination,
+                  distance: await GoogleMapService.getDistance(
+                     path.source?.name ? path.source.coordinates.coordinates : location,
+                     path.destination.coordinates.coordinates,
+                  ),
+               };
+            }),
+         );
 
-         const totalDistance = shortestPath.reduce((acc, item) => acc + item.distance, 0);
+         const totalDistance = shortestPath.reduce((acc, item) => acc + item.distance?.distanceKiloMetres?.value, 0);
 
          return {
             schedule: shortestPath,
             totalDistance,
          };
       } catch (error) {
-         throw new Error(err.message);
+         throw new Error(error.message);
       }
    },
 
@@ -100,7 +99,7 @@ const LocationService = {
          const location = await Location.findOne({ label: label });
          return location;
       } catch (error) {
-         throw new Error(err.messageor.message);
+         throw new Error(error.message);
       }
    },
 };
