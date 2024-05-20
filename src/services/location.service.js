@@ -106,7 +106,7 @@ const LocationService = {
           return {
             from: path.source ?? null,
             to: path.destination,
-            distance: await GoogleMapService.getDistance(
+            distance: helper.getDistanceFromArrFromArr(
               path.source?.name
                 ? path.source.coordinates.coordinates
                 : location,

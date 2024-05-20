@@ -66,7 +66,7 @@ const commonController = {
       const food = await locationService.getLocationFromLabe(result);
 
       if (location) {
-        const distanceInfo = await GoogleMapService.getDistance(
+        const distanceInfo = helper.getDistanceFromArrFromArr(
           location,
           locationLabel._doc.coordinates.coordinates
         );
@@ -78,7 +78,7 @@ const commonController = {
       }
 
       if (food) {
-        const distanceInfo = await GoogleMapService.getDistance(
+        const distanceInfo = helper.getDistanceFromArrFromArr(
           location,
           food._doc.coordinates.coordinates
         );
