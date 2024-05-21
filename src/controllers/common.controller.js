@@ -64,12 +64,13 @@ const commonController = {
 
       const locationLabel = await locationService.getLocationFromLabe(result);
       const food = await locationService.getLocationFromLabe(result);
-
-      if (location) {
-        const distanceInfo = helper.getDistanceFromArrFromArr(
-          location,
-          locationLabel._doc.coordinates.coordinates
-        );
+      if (locationLabel) {
+        const distanceInfo = location
+          ? helper.getDistanceFromArrFromArr(
+              location,
+              locationLabel._doc.coordinates.coordinates
+            )
+          : null;
         return res.json({
           location: { ...locationLabel._doc, distanceInfo },
           food: null,
@@ -78,10 +79,12 @@ const commonController = {
       }
 
       if (food) {
-        const distanceInfo = helper.getDistanceFromArrFromArr(
-          location,
-          food._doc.coordinates.coordinates
-        );
+        const distanceInfo = location
+          ? helper.getDistanceFromArrFromArr(
+              location,
+              food._doc.coordinates.coordinates
+            )
+          : null;
         return res.json({
           food: { ...food._doc, distanceInfo },
           location: null,
