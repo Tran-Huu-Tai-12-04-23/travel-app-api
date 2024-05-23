@@ -111,16 +111,8 @@ class Graph {
         rootLocation,
         location.coordinates.coordinates
       );
-      this.addEdge(
-        roots,
-        location,
-        weight?.distanceKiloMetres ? weight.distanceKiloMetres.value : 0 + i
-      );
-      this.addEdge(
-        location,
-        roots,
-        weight?.distanceKiloMetres ? weight.distanceKiloMetres.value : 0 + i
-      );
+      this.addEdge(roots, location, weight);
+      this.addEdge(location, roots, weight);
 
       for (let j = 0; j < locations.length; j++) {
         const subLocation = locations[j];
@@ -129,13 +121,7 @@ class Graph {
             subLocation.coordinates.coordinates,
             location.coordinates.coordinates
           );
-          this.addEdge(
-            location,
-            subLocation,
-            subWeight?.distanceKiloMetres
-              ? subWeight?.distanceKiloMetres.value
-              : 0 + i + j
-          );
+          this.addEdge(location, subLocation, subWeight);
         }
       }
     }
