@@ -59,11 +59,13 @@ const commonController = {
 
       const { result } = response.data;
 
+      console.log(result);
+
       if (!result)
         return res.status(404).json({ message: "Location not found!" });
 
       const locationLabel = await locationService.getLocationFromLabe(result);
-      const food = await locationService.getLocationFromLabe(result);
+      const food = await foodService.getFoodFromLabel(result);
       if (locationLabel) {
         const distanceInfo = location
           ? helper.getDistanceFromArrFromArr(
