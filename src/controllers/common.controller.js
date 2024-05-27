@@ -3,6 +3,7 @@ const foodService = require("../services/food.service");
 const GoogleMapService = require("../services/google.map.service");
 const locationService = require("../services/location.service");
 const axios = require("axios");
+const { translate } = require("../services/translate.service");
 
 const commonController = {
   suggestScheduleFoodTourForUser: async (req, res) => {
@@ -171,6 +172,19 @@ const commonController = {
       }
 
       return json([[], 0]);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+
+  translate: async (req, res) => {
+    try {
+      const text = req.body.text;
+      const result = await translate(text);
+      if (result) {
+        return res.json(result);
+      }
+      return null;
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }

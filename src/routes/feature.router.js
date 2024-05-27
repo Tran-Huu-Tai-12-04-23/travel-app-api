@@ -4,7 +4,6 @@ const router = express.Router();
 const multer = require("multer");
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 router.post(
   "/suggest-location-schedule",
@@ -15,6 +14,7 @@ router.post(
   commonController.suggestScheduleFoodTourForUser
 );
 router.post("/predict", commonController.predictImg);
+router.post("/translate", commonController.translate);
 router.post("/search_any", commonController.searchAny);
 router.post("/food/search", commonController.searchFood);
 router.post("/location/search", commonController.searchLocation);
