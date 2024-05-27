@@ -2,16 +2,16 @@ const axios = require("axios");
 const translate = async (text = "") => {
   const options = {
     method: "POST",
-    url: "https://google-api31.p.rapidapi.com/gtranslate",
+    url: "https://deep-translate1.p.rapidapi.com/language/translate/v2",
     headers: {
       "x-rapidapi-key": "ef254d8106msh9705bd138d388c6p1cee3ejsn76a74925db64",
-      "x-rapidapi-host": "google-api31.p.rapidapi.com",
+      "x-rapidapi-host": "deep-translate1.p.rapidapi.com",
       "Content-Type": "application/json",
     },
     data: {
-      text: text,
-      to: "vi",
-      from_lang: "",
+      q: text,
+      source: "en",
+      target: "vi",
     },
   };
 
