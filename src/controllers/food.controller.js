@@ -5,16 +5,16 @@ const GoogleMapService = require("../services/google.map.service");
 const foodController = {
   findNearest: async (req, res) => {
     try {
-      const { location, limit, distance } = res.body;
+      const { location, limit, distance } = req.body;
       //location is [longitude, latitude]
-      if (location) {
+      if (!location) {
         return res.status(400).json({ message: "Invalid user location" });
       }
 
       let foods = await FoodService.findNearestFood(location, distance, limit);
 
       if (!foods) res.status(400).json({ message: "Food not found!" });
-
+      console.log(location);
       foods = foods.map((food) => {
         return {
           ...food,

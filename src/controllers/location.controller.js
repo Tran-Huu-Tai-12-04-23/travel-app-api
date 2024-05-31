@@ -1,13 +1,11 @@
 const helper = require("../helper");
-const GoogleMapService = require("../services/google.map.service");
 const LocationService = require("../services/location.service");
 
 const locationController = {
   findNearest: async (req, res) => {
     try {
-      const { location, limit, distance } = res.body;
-
-      if (location) {
+      const { location, limit, distance } = req.body;
+      if (!location) {
         return res.status(400).json({ message: "Invalid user location" });
       }
 
