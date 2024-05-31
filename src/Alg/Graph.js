@@ -49,6 +49,7 @@ class Graph {
     const visited = [root];
     let currentVertex = root;
     while (visited.length < this.adjacencyList.size - 1) {
+      console.log(visited.map((v) => [v.source.name, v.destination.name]));
       const neighbors = this.getNeighbors(currentVertex);
       const minNer = this.findMinShortPathFromNeighbors(
         neighbors,
@@ -74,6 +75,8 @@ class Graph {
       }
     });
 
+    console.log({ minE: minEdge.source.name });
+
     neighbors.forEach((ne) => {
       if (
         ne.weight < minEdge.weight &&
@@ -94,11 +97,7 @@ class Graph {
   checkExistVisited(vertex, visited) {
     return !!visited.find(
       (v) =>
-        (v.source?._id.toString() === vertex.source?._id.toString() &&
-          v.destination?._id.toString() ===
-            vertex.destination?._id.toString()) ||
-        (v.source?._id.toString() === vertex.destination?._id.toString() &&
-          v.destination?._id.toString() === vertex.source?._id.toString())
+        v.destination?._id.toString() === vertex.destination?._id.toString()
     );
   }
 
