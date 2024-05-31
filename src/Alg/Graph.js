@@ -69,13 +69,14 @@ class Graph {
     neighbors.forEach((ne) => {
       if (
         !this.checkExistVisited(ne, visited) &&
-        ne.destination._id !== root.source._id
+        ne.destination._id !== root.source._id &&
+        ne.weight < minEdge
       ) {
         minEdge = ne;
       }
     });
 
-    console.log({ minE: minEdge.source.name });
+    console.log({ minE: minEdge.weight });
 
     neighbors.forEach((ne) => {
       if (
@@ -110,7 +111,6 @@ class Graph {
         rootLocation,
         location.coordinates.coordinates
       );
-      console.log(weight);
       this.addEdge(roots, location, weight.distanceInKilometers);
       this.addEdge(location, roots, weight.distanceInKilometers);
 

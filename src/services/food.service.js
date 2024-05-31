@@ -100,7 +100,9 @@ const FoodService = {
             from: path.source ?? null,
             to: path.destination,
             distance: helper.getDistanceFromArrFromArr(
-              location,
+              path.source?.name
+                ? path.source.coordinates.coordinates
+                : location,
               path.destination.coordinates.coordinates
             ),
           };
