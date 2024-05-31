@@ -111,8 +111,9 @@ class Graph {
         rootLocation,
         location.coordinates.coordinates
       );
-      this.addEdge(roots, location, weight);
-      this.addEdge(location, roots, weight);
+      console.log(weight);
+      this.addEdge(roots, location, weight.distanceInKilometers);
+      this.addEdge(location, roots, weight.distanceInKilometers);
 
       for (let j = 0; j < locations.length; j++) {
         const subLocation = locations[j];
@@ -121,7 +122,7 @@ class Graph {
             subLocation.coordinates.coordinates,
             location.coordinates.coordinates
           );
-          this.addEdge(location, subLocation, subWeight);
+          this.addEdge(location, subLocation, subWeight.distanceInKilometers);
         }
       }
     }
