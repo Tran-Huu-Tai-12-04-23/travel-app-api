@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
    res.status(400).send('HUUTAI CI/CD fix issue');
 });
-app.use('/api', router);
+app.use('/', router);
 
 // app.use('/api', router);
 db.connectToDatabase().then(function () {
