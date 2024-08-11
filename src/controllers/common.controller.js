@@ -279,6 +279,27 @@ const commonController = {
       return res.status(400).json({ message: error.message });
     }
   },
+  translateWithOptions: async (req, res) => {
+    try {
+      const text = req.body.text;
+      const option = req.body.option;
+      const response = await axios.post(
+        process.env.API_MODEL_GEMINI + "/translation",
+        { text: text, option: option },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response) {
+        return res.json(response);
+      }
+      return null;
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
 };
 
 module.exports = commonController;
