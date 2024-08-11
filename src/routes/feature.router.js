@@ -14,6 +14,8 @@ router.post(
   commonController.suggestScheduleFoodTourForUser
 );
 router.post("/predict", commonController.predictImg);
+router.post("/predict_location", commonController.predictLocation);
+router.post("/predict_food", commonController.predictFood);
 router.post("/translate", commonController.translate);
 router.post("/search_any", commonController.searchAny);
 router.post("/food/search", commonController.searchFood);
