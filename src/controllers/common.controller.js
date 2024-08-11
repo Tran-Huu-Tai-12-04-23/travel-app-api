@@ -281,8 +281,8 @@ const commonController = {
   },
   translateWithOptions: async (req, res) => {
     try {
-      const text = req.body.text;
-      const option = req.body.option;
+      const { text, option } = req.body;
+
       const response = await axios.post(
         process.env.API_MODEL_GEMINI + "/translation",
         { text: text, option: option },
@@ -293,9 +293,9 @@ const commonController = {
         }
       );
       if (response) {
-        return res.json(response);
+        return res.json(response.data);
       }
-      return null;
+      throw new Error("Can not translate this text!");
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
