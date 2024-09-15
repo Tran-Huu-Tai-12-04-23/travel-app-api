@@ -1,17 +1,16 @@
-const helper = require("../helpers");
-const foodService = require("../services/food.service");
-const GoogleMapService = require("../services/google.map.service");
-const locationService = require("../services/location.service");
-const axios = require("axios");
-const { translate } = require("../services/translate.service");
+const helper = require('../helpers');
+const foodService = require('../services/food.service');
+const GoogleMapService = require('../services/google.map.service');
+const locationService = require('../services/location.service');
+const axios = require('axios');
+const { translate } = require('../services/translate.service');
 
 const commonController = {
   suggestScheduleFoodTourForUser: async (req, res) => {
     try {
       const { location } = req.body;
       // location is [longitude, latitude]
-      if (!location)
-        return res.status(400).json({ message: "User location not  found!" });
+      if (!location) return res.status(400).json({ message: 'User location not  found!' });
 
       const foods = await foodService.scheduleFood(location);
       return res.json({
@@ -26,8 +25,7 @@ const commonController = {
     try {
       const { location } = req.body;
       // location is [longitude, latitude]
-      if (!location)
-        return res.status(400).json({ message: "User location not  found!" });
+      if (!location) return res.status(400).json({ message: 'User location not  found!' });
 
       const locations = await locationService.scheduleLocation(location);
 
@@ -44,8 +42,7 @@ const commonController = {
     try {
       const { location, image_url } = req.body;
 
-      if (!image_url)
-        return res.status(404).json({ message: "Please provided image!" });
+      if (!image_url) return res.status(404).json({ message: 'Please provided image!' });
       // location is [longitude, latitude]
       //   ==============
       const response = await axios.post(
@@ -53,26 +50,22 @@ const commonController = {
         { image_url },
         {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
-        }
+        },
       );
 
       const { result } = response.data;
 
       console.log(result);
 
-      if (!result)
-        return res.status(404).json({ message: "Location not found!" });
+      if (!result) return res.status(404).json({ message: 'Location not found!' });
 
       const locationLabel = await locationService.getLocationFromLabe(result);
       const food = await foodService.getFoodFromLabel(result);
       if (locationLabel) {
         const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(
-              location,
-              locationLabel._doc.coordinates.coordinates
-            )
+          ? helper.getDistanceFromArrFromArr(location, locationLabel._doc.coordinates.coordinates)
           : null;
         return res.json({
           location: { ...locationLabel._doc, distanceInfo },
@@ -83,10 +76,7 @@ const commonController = {
 
       if (food) {
         const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(
-              location,
-              food._doc.coordinates.coordinates
-            )
+          ? helper.getDistanceFromArrFromArr(location, food._doc.coordinates.coordinates)
           : null;
         return res.json({
           food: { ...food._doc, distanceInfo },
@@ -95,44 +85,39 @@ const commonController = {
         });
       }
 
-      return res.status(400).json({ message: "Can not recognize this sense!" });
+      return res.status(400).json({ message: 'Can not recognize this sense!' });
     } catch (error) {
       console.log({ message: error.message });
-      return res.status(400).json({ message: "Can not recognize this sense!" });
+      return res.status(400).json({ message: 'Can not recognize this sense!' });
     }
   },
   predictLocation: async (req, res) => {
     try {
       const { location, image_url } = req.body;
 
-      if (!image_url)
-        return res.status(404).json({ message: "Please provided image!" });
+      if (!image_url) return res.status(404).json({ message: 'Please provided image!' });
       // location is [longitude, latitude]
       //   ==============
       const response = await axios.post(
-        process.env.API_MODEL_GEMINI + "/classifyLocation",
+        process.env.API_MODEL_GEMINI + '/classifyLocation',
         { image_url },
         {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
-        }
+        },
       );
 
       const { result } = response.data;
 
       console.log(result);
 
-      if (!result)
-        return res.status(404).json({ message: "Location not found!" });
+      if (!result) return res.status(404).json({ message: 'Location not found!' });
 
       const locationLabel = await locationService.getLocationFromLabe(result);
       if (locationLabel) {
         const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(
-              location,
-              locationLabel._doc.coordinates.coordinates
-            )
+          ? helper.getDistanceFromArrFromArr(location, locationLabel._doc.coordinates.coordinates)
           : null;
         return res.json({
           location: { ...locationLabel._doc, distanceInfo },
@@ -141,42 +126,37 @@ const commonController = {
         });
       }
 
-      return res.status(400).json({ message: "Can not recognize this sense!" });
+      return res.status(400).json({ message: 'Can not recognize this sense!' });
     } catch (error) {
       console.log({ message: error.message });
-      return res.status(400).json({ message: "Can not recognize this sense!" });
+      return res.status(400).json({ message: 'Can not recognize this sense!' });
     }
   },
   predictFood: async (req, res) => {
     try {
       const { location, image_url } = req.body;
 
-      if (!image_url)
-        return res.status(404).json({ message: "Please provided image!" });
+      if (!image_url) return res.status(404).json({ message: 'Please provided image!' });
       // location is [longitude, latitude]
       //   ==============
       const response = await axios.post(
-        process.env.API_MODEL_GEMINI + "/classifyFood",
+        process.env.API_MODEL_GEMINI + '/classifyFood',
         { image_url },
         {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
-        }
+        },
       );
 
       const { result } = response.data;
 
-      if (!result)
-        return res.status(404).json({ message: "Location not found!" });
+      if (!result) return res.status(404).json({ message: 'Location not found!' });
 
       const food = await foodService.getFoodFromLabel(result);
       if (food) {
         const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(
-              location,
-              food._doc.coordinates.coordinates
-            )
+          ? helper.getDistanceFromArrFromArr(location, food._doc.coordinates.coordinates)
           : null;
         return res.json({
           food: { ...food._doc, distanceInfo },
@@ -185,10 +165,10 @@ const commonController = {
         });
       }
 
-      return res.status(400).json({ message: "Can not recognize this sense!" });
+      return res.status(400).json({ message: 'Can not recognize this sense!' });
     } catch (error) {
       console.log({ message: error.message });
-      return res.status(400).json({ message: "Can not recognize this sense!" });
+      return res.status(400).json({ message: 'Can not recognize this sense!' });
     }
   },
 
@@ -220,7 +200,7 @@ const commonController = {
       const type = req.body.type;
       const skip = req.body.skip || 0;
       const take = req.body.take || 10;
-      if (type === "ALL") {
+      if (type === 'ALL') {
         const result = await Promise.all([
           foodService.search(query, skip, take / 2),
           locationService.search(query, skip, take / 2),
@@ -228,34 +208,31 @@ const commonController = {
         const locationRes = result[1].result.map((location) => {
           return {
             ...location,
-            type: "LOCATION",
+            type: 'LOCATION',
           };
         });
         const foodRes = result[0].result.map((food) => {
           return {
             ...food,
-            type: "FOOD",
+            type: 'FOOD',
           };
         });
-        return res.json([
-          [...locationRes, ...foodRes],
-          result[0].count + result[1].count,
-        ]);
-      } else if (type === "LOCATION") {
+        return res.json([[...locationRes, ...foodRes], result[0].count + result[1].count]);
+      } else if (type === 'LOCATION') {
         const result = await locationService.search(query, skip, take);
         const resultType = result.result.map((location) => {
           return {
             ...location,
-            type: "LOCATION",
+            type: 'LOCATION',
           };
         });
         return res.json([resultType, result.count]);
-      } else if (type === "FOOD") {
+      } else if (type === 'FOOD') {
         const result = await foodService.search(query, skip, take);
         const resultType = result.result.map((food) => {
           return {
             ...food,
-            type: "FOOD",
+            type: 'FOOD',
           };
         });
         return res.json([resultType, result.count]);
@@ -284,18 +261,18 @@ const commonController = {
       const { text, option } = req.body;
 
       const response = await axios.post(
-        process.env.API_MODEL_GEMINI + "/translation",
+        process.env.API_MODEL_GEMINI + '/translation',
         { text: text, option: option },
         {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
-        }
+        },
       );
       if (response) {
         return res.json(response.data);
       }
-      throw new Error("Can not translate this text!");
+      throw new Error('Can not translate this text!');
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
