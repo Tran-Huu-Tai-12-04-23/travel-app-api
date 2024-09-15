@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const {
   db: { host, name, port },
-} = require("../config/config.mongodb");
+} = require('../config/config.mongodb');
 
 const connectString = `mongodb+srv://${host}/travelappsupport?retryWrites=true&w=majority&appName=${name}`;
 
@@ -18,15 +18,15 @@ class Database {
   }
 
   // connect
-  connect(type = "mongodb") {
+  connect(type = 'mongodb') {
     mongoose
       .connect(connectString)
       .then((_) => {
-        console.log("Connect db successful!");
+        console.log('Connect db successful!');
       })
       .catch((e) => {
         console.log(e);
-        console.log("Connect db fail!");
+        console.log('Connect db fail!');
       });
   }
 }

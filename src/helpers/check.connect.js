@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const os = require("os");
-const process = require("process");
+const mongoose = require('mongoose');
+const os = require('os');
+const process = require('process');
 const _SECOND = 5000;
 
 // count connect db
@@ -22,7 +22,7 @@ function checkOverload() {
     console.log(`Memory usage : ${memoryUsage / 1024 / 1024} MB`);
 
     if (numConnection > maxConnections) {
-      console.log("Connection overload detected!");
+      console.log('Connection overload detected!');
     }
   }, _SECOND); // monitor every 5 seconds
 }

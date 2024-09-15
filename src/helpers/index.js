@@ -1,4 +1,4 @@
-const geolib = require("geolib");
+const geolib = require('geolib');
 
 class Helper {
   getDistanceFromArr(ori, des) {
@@ -20,7 +20,7 @@ class Helper {
       {
         latitude: des[1],
         longitude: des[0],
-      }
+      },
     );
     const distanceInKilometers = distanceInMeters / 1000;
 
