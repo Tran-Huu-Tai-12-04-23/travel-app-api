@@ -1,26 +1,20 @@
-const Graph = require("../Alg/Graph");
-const helper = require("../helper");
-const Food = require("../models/food.model");
-const GoogleMapService = require("./google.map.service");
+const Graph = require('../Alg/Graph');
+const helper = require('../helper');
+const Food = require('../models/food.model');
+const GoogleMapService = require('./google.map.service');
 
 const FoodService = {
   search: async (query, skip = 0, take = 10) => {
     try {
       const [result, count] = await Promise.all([
         Food.find({
-          $or: [
-            { name: { $regex: new RegExp(query, "i") } },
-            { description: { $regex: new RegExp(query, "i") } },
-          ],
+          $or: [{ name: { $regex: new RegExp(query, 'i') } }, { description: { $regex: new RegExp(query, 'i') } }],
         })
           .skip(skip)
           .limit(take)
           .lean(),
         Food.countDocuments({
-          $or: [
-            { name: { $regex: new RegExp(query, "i") } },
-            { description: { $regex: new RegExp(query, "i") } },
-          ],
+          $or: [{ name: { $regex: new RegExp(query, 'i') } }, { description: { $regex: new RegExp(query, 'i') } }],
         }),
       ]);
       return { result, count };
@@ -33,7 +27,7 @@ const FoodService = {
       let foodExist = await Food.findOne({ name: food.name });
 
       if (foodExist) {
-        throw new Error("food already exist!");
+        throw new Error('food already exist!');
       }
       const newFood = new Food({ ...food });
       return await newFood.save();
@@ -54,7 +48,7 @@ const FoodService = {
   getFoodById: async (id) => {
     try {
       const food = await Food.findById(id);
-      if (!food) throw new Error("Food not found!");
+      if (!food) throw new Error('Food not found!');
       return food;
     } catch (err) {
       throw new Error(err.message);
@@ -64,7 +58,7 @@ const FoodService = {
   findNearestFood: async (location, distance = 8, limit = 10000000) => {
     try {
       const point = {
-        type: "Point",
+        type: 'Point',
         coordinates: location, // issues revers index for long tatue
       };
       const maxDistance = distance * 1000;
@@ -90,7 +84,7 @@ const FoodService = {
 
   scheduleFood: async (location) => {
     try {
-      if (!location) throw new Error("User location invalid!");
+      if (!location) throw new Error('User location invalid!');
       let foods = await FoodService.findNearestFood(location, 1000, 4);
       const graph = new Graph();
       let shortestPath = await graph.findShortSchedule(location, foods);
@@ -100,19 +94,14 @@ const FoodService = {
             from: path.source ?? null,
             to: path.destination,
             distance: helper.getDistanceFromArrFromArr(
-              path.source?.name
-                ? path.source.coordinates.coordinates
-                : location,
-              path.destination.coordinates.coordinates
+              path.source?.name ? path.source.coordinates.coordinates : location,
+              path.destination.coordinates.coordinates,
             ),
           };
-        })
+        }),
       );
 
-      const totalDistance = shortestPath.reduce(
-        (acc, item) => acc + item.distance?.distanceKiloMetres?.value,
-        0
-      );
+      const totalDistance = shortestPath.reduce((acc, item) => acc + item.distance?.distanceKiloMetres?.value, 0);
 
       return {
         schedule: shortestPath,

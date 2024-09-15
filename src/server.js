@@ -13,16 +13,16 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-   res.status(400).send('HUUTAI CI/CD fix issue');
+  res.status(400).send('HUUTAI CI/CD fix issue');
 });
 app.use('/', router);
 
 // app.use('/api', router);
 db.connectToDatabase().then(function () {
-   console.log('DB connect successfully!');
-   app.listen(PORT, () => {
-      console.log(`Distance api `, process.env.LINK_GET_DISTANCE_API);
-      console.log(`Server is running on port http://localhost:${PORT}`);
-      FuncTest();
-   });
+  console.log('DB connect successfully!');
+  app.listen(PORT, () => {
+    console.log(`Distance api `, process.env.LINK_GET_DISTANCE_API);
+    console.log(`Server is running on port http://localhost:${PORT}`);
+    FuncTest();
+  });
 });
