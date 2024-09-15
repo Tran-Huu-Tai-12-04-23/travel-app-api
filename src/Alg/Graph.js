@@ -1,4 +1,4 @@
-const helper = require("../helper");
+const helper = require("../helpers");
 const GoogleMapService = require("../services/google.map.service");
 class Edge {
   constructor(source, destination, weight) {

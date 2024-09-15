@@ -1,5 +1,5 @@
 const Graph = require("../Alg/Graph");
-const helper = require("../helper");
+const helper = require("../helpers");
 const Location = require("../models/location.model");
 const GoogleMapService = require("./google.map.service");
 

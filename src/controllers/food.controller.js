@@ -1,4 +1,4 @@
-const helper = require("../helper");
+const helper = require("../helpers");
 const FoodService = require("../services/food.service");
 const GoogleMapService = require("../services/google.map.service");
 

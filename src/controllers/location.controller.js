@@ -1,4 +1,4 @@
-const helper = require("../helper");
+const helper = require("../helpers");
 const LocationService = require("../services/location.service");
 
 const locationController = {
