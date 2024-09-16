@@ -1,4 +1,4 @@
-Vì sao lại sử dụng react native 
+Vì sao lại sử dụng react native
 Tái sử dụng mã: Viết một lần, chạy trên cả hai nền tảng iOS và Android.
 Hiệu suất cao: Sử dụng các thành phần gốc của hệ điều hành, giúp ứng dụng có hiệu suất tốt hơn so với các framework dựa trên web.
 Cộng đồng lớn: Có nhiều tài liệu, thư viện hỗ trợ và cộng đồng phát triển rộng lớn.

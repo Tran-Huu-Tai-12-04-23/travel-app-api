@@ -1,8 +1,8 @@
-const foods = require("./assets/food");
-const locations = require("./assets/location");
-const LocationService = require("./services/location.service");
-const FoodService = require("./services/food.service");
-const GoogleMapService = require("./services/google.map.service");
+const foods = require('./assets/food');
+const locations = require('./assets/location');
+const LocationService = require('./services/location.service');
+const FoodService = require('./services/food.service');
+const GoogleMapService = require('./services/google.map.service');
 
 const FuncTest = async () => {
   try {

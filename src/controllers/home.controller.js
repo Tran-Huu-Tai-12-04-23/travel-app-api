@@ -1,8 +1,8 @@
-const helper = require("../helper");
-const authService = require("../services/auth.service");
-const FoodService = require("../services/food.service");
-const GoogleMapService = require("../services/google.map.service");
-const LocationService = require("../services/location.service");
+const helper = require('../helpers');
+const authService = require('../services/auth.service');
+const FoodService = require('../services/food.service');
+const GoogleMapService = require('../services/google.map.service');
+const LocationService = require('../services/location.service');
 
 const homeController = {
   getHomeData: async (req, res) => {
@@ -10,22 +10,11 @@ const homeController = {
       const { location } = req.body;
 
       if (location) {
-        const topFoodNearest = await FoodService.findNearestFood(
-          location,
-          100,
-          10
-        );
-        const topLocationNearest = await LocationService.findNearestLocations(
-          location,
-          100,
-          10
-        );
+        const topFoodNearest = await FoodService.findNearestFood(location, 100, 10);
+        const topLocationNearest = await LocationService.findNearestLocations(location, 100, 10);
 
         const foodPromises = topFoodNearest.map(async (food) => {
-          const data = helper.getDistanceFromArrFromArr(
-            location,
-            food.coordinates.coordinates
-          );
+          const data = helper.getDistanceFromArrFromArr(location, food.coordinates.coordinates);
           return {
             distanceInfo: data,
             ...food?._doc,
@@ -33,10 +22,7 @@ const homeController = {
         });
 
         const locationPromises = topLocationNearest.map(async (lc) => {
-          const data = helper.getDistanceFromArrFromArr(
-            location,
-            lc.coordinates.coordinates
-          );
+          const data = helper.getDistanceFromArrFromArr(location, lc.coordinates.coordinates);
           return {
             distanceInfo: data,
             ...lc?._doc,
@@ -54,8 +40,7 @@ const homeController = {
       //  when not provide location
 
       const latestTopTenFood = await FoodService.getLatestTopTenFood();
-      const latestTopTenLocation =
-        await LocationService.getLatestTopTenLocation();
+      const latestTopTenLocation = await LocationService.getLatestTopTenLocation();
 
       return res.json({
         foods: latestTopTenFood,

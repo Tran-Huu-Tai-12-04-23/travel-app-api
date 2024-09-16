@@ -1,26 +1,20 @@
-const Graph = require("../Alg/Graph");
-const helper = require("../helper");
-const Location = require("../models/location.model");
-const GoogleMapService = require("./google.map.service");
+const Graph = require('../Alg/Graph');
+const helper = require('../helpers');
+const Location = require('../models/location.model');
+const GoogleMapService = require('./google.map.service');
 
 const LocationService = {
   search: async (query, skip = 0, take = 10) => {
     try {
       const [result, count] = await Promise.all([
         Location.find({
-          $or: [
-            { name: { $regex: new RegExp(query, "i") } },
-            { description: { $regex: new RegExp(query, "i") } },
-          ],
+          $or: [{ name: { $regex: new RegExp(query, 'i') } }, { description: { $regex: new RegExp(query, 'i') } }],
         })
           .skip(skip)
           .limit(take)
           .lean(),
         Location.countDocuments({
-          $or: [
-            { name: { $regex: new RegExp(query, "i") } },
-            { description: { $regex: new RegExp(query, "i") } },
-          ],
+          $or: [{ name: { $regex: new RegExp(query, 'i') } }, { description: { $regex: new RegExp(query, 'i') } }],
         }),
       ]);
       return { result, count };
@@ -34,7 +28,7 @@ const LocationService = {
       let locationExist = await Location.findOne({ name: location.name });
 
       if (locationExist) {
-        throw new Error("location already exist!");
+        throw new Error('location already exist!');
       }
       const newLocation = new Location({ ...location });
       return await newLocation.save();
@@ -45,9 +39,7 @@ const LocationService = {
 
   getLatestTopTenLocation: async () => {
     try {
-      const latestLocations = await Location.find()
-        .sort({ createdAt: -1 })
-        .limit(10);
+      const latestLocations = await Location.find().sort({ createdAt: -1 }).limit(10);
       return latestLocations;
     } catch (err) {
       throw new Error(err.message);
@@ -57,7 +49,7 @@ const LocationService = {
   getLocationById: async (id) => {
     try {
       const location = await Location.findById(id);
-      if (!location) throw new Error("location not found!");
+      if (!location) throw new Error('location not found!');
       return location;
     } catch (err) {
       throw new Error(err.message);
@@ -68,7 +60,7 @@ const LocationService = {
   findNearestLocations: async (location, distance = 8, limit = 1000) => {
     try {
       const point = {
-        type: "Point",
+        type: 'Point',
         coordinates: location, // issues revers index for long tatue
       };
       const maxDistance = distance * 1000;
@@ -93,12 +85,8 @@ const LocationService = {
 
   scheduleLocation: async (location) => {
     try {
-      if (!location) throw new Error("User location invalid!");
-      let locations = await LocationService.findNearestLocations(
-        location,
-        1000,
-        4
-      );
+      if (!location) throw new Error('User location invalid!');
+      let locations = await LocationService.findNearestLocations(location, 1000, 4);
       const graph = new Graph();
       let shortestPath = await graph.findShortSchedule(location, locations);
       shortestPath = await Promise.all(
@@ -107,19 +95,14 @@ const LocationService = {
             from: path.source ?? null,
             to: path.destination,
             distance: helper.getDistanceFromArrFromArr(
-              path.source?.name
-                ? path.source.coordinates.coordinates
-                : location,
-              path.destination.coordinates.coordinates
+              path.source?.name ? path.source.coordinates.coordinates : location,
+              path.destination.coordinates.coordinates,
             ),
           };
-        })
+        }),
       );
 
-      const totalDistance = shortestPath.reduce(
-        (acc, item) => acc + item.distance?.distanceKiloMetres?.value,
-        0
-      );
+      const totalDistance = shortestPath.reduce((acc, item) => acc + item.distance?.distanceKiloMetres?.value, 0);
 
       return {
         schedule: shortestPath,
