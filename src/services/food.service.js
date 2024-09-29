@@ -120,6 +120,14 @@ const FoodService = {
       throw new Error(error.message);
     }
   },
+  getFoodsFromLabels: async (label) => {
+    try {
+      const foods = await Food.find({ label: { $in: label } });
+      return foods;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = FoodService;

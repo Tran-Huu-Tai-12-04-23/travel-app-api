@@ -110,23 +110,19 @@ const commonController = {
 
       const { result } = response.data;
 
-      console.log(result);
-
       if (!result) return res.status(404).json({ message: 'Location not found!' });
 
-      const locationLabel = await locationService.getLocationFromLabe(result);
-      if (locationLabel) {
+      const lstLocations = await locationService.getLocationsFromLabels(result);
+      for (let i = 0; i < lstLocations.length; i++) {
         const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(location, locationLabel._doc.coordinates.coordinates)
+          ? helper.getDistanceFromArrFromArr(location, lstLocations[i]._doc.coordinates.coordinates)
           : null;
-        return res.json({
-          location: { ...locationLabel._doc, distanceInfo },
-          food: null,
-          meta: location,
-        });
+        lstLocations[i] = { ...lstLocations[i]._doc, distanceInfo };
       }
 
-      return res.status(400).json({ message: 'Can not recognize this sense!' });
+      return res.json({
+        locations: lstLocations,
+      });
     } catch (error) {
       console.log({ message: error.message });
       return res.status(400).json({ message: 'Can not recognize this sense!' });
@@ -153,19 +149,17 @@ const commonController = {
 
       if (!result) return res.status(404).json({ message: 'Location not found!' });
 
-      const food = await foodService.getFoodFromLabel(result);
-      if (food) {
+      const foods = await foodService.getFoodsFromLabels(result);
+      for (let i = 0; i < foods.length; i++) {
         const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(location, food._doc.coordinates.coordinates)
+          ? helper.getDistanceFromArrFromArr(location, foods[i]._doc.coordinates.coordinates)
           : null;
-        return res.json({
-          food: { ...food._doc, distanceInfo },
-          location: null,
-          meta: location,
-        });
+        foods[i] = { ...foods[i]._doc, distanceInfo };
       }
 
-      return res.status(400).json({ message: 'Can not recognize this sense!' });
+      return res.json({
+        foods,
+      });
     } catch (error) {
       console.log({ message: error.message });
       return res.status(400).json({ message: 'Can not recognize this sense!' });

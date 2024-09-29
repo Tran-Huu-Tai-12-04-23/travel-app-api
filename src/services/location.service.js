@@ -121,6 +121,15 @@ const LocationService = {
       throw new Error(error.message);
     }
   },
+
+  getLocationsFromLabels: async (label) => {
+    try {
+      const location = await Location.find({ label: { $in: label } });
+      return location;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = LocationService;
