@@ -122,6 +122,7 @@ const commonController = {
 
       return res.json({
         locations: lstLocations,
+        isLocation: true,
       });
     } catch (error) {
       console.log({ message: error.message });
@@ -159,6 +160,7 @@ const commonController = {
 
       return res.json({
         foods,
+        isFood: true,
       });
     } catch (error) {
       console.log({ message: error.message });
