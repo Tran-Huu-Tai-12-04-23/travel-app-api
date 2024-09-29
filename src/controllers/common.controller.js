@@ -40,52 +40,13 @@ const commonController = {
 
   predictImg: async (req, res) => {
     try {
-      const { location, image_url } = req.body;
-
-      if (!image_url) return res.status(404).json({ message: 'Please provided image!' });
-      // location is [longitude, latitude]
-      //   ==============
-      const response = await axios.post(
-        process.env.API_MODEL,
-        { image_url },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      const { result } = response.data;
-
-      console.log(result);
-
-      if (!result) return res.status(404).json({ message: 'Location not found!' });
-
-      const locationLabel = await locationService.getLocationFromLabe(result);
-      const food = await foodService.getFoodFromLabel(result);
-      if (locationLabel) {
-        const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(location, locationLabel._doc.coordinates.coordinates)
-          : null;
-        return res.json({
-          location: { ...locationLabel._doc, distanceInfo },
-          food: null,
-          meta: location,
-        });
-      }
-
-      if (food) {
-        const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(location, food._doc.coordinates.coordinates)
-          : null;
-        return res.json({
-          food: { ...food._doc, distanceInfo },
-          location: null,
-          meta: location,
-        });
-      }
-
-      return res.status(400).json({ message: 'Can not recognize this sense!' });
+      const [locations, foods] = await Promise.all([this.predictLocation(req, res), this.predictFood(req, res)]);
+      return res.json({
+        locations: locations.locations || [],
+        foods: foods.foods || [],
+        isLocation: locations.isLocation,
+        isFood: foods.isFood,
+      });
     } catch (error) {
       console.log({ message: error.message });
       return res.status(400).json({ message: 'Can not recognize this sense!' });
