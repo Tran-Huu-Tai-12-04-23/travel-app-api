@@ -6,6 +6,77 @@ const axios = require('axios');
 const { translate } = require('../services/translate.service');
 
 const commonController = {
+  constructor() {
+    this.getLstLocationFromImg = this.getLstLocationFromImg.bind(this);
+    this.getLstFoodFromImg = this.getLstFoodFromImg.bind(this);
+  },
+  getLstLocationFromImg: async (location, image_url) => {
+    if (!image_url) return res.status(404).json({ message: 'Please provided image!' });
+    // location is [longitude, latitude]
+    //   ==============
+    const response = await axios.post(
+      process.env.API_MODEL_GEMINI + '/classifyLocation',
+      { image_url },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    const { result } = response.data;
+
+    if (!result) return res.status(404).json({ message: 'Location not found!' });
+
+    const lstLocations = await locationService.getLocationsFromLabels(result);
+    for (let i = 0; i < lstLocations.length; i++) {
+      const distanceInfo = location
+        ? helper.getDistanceFromArrFromArr(location, lstLocations[i]._doc.coordinates.coordinates)
+        : null;
+      lstLocations[i] = { ...lstLocations[i]._doc, distanceInfo };
+    }
+
+    if (lstLocations?.length > 0)
+      return {
+        locations: lstLocations,
+        isLocation: true,
+      };
+    return null;
+  },
+  getLstFoodFromImg: async (location, image_url) => {
+    if (!image_url) return res.status(404).json({ message: 'Please provided image!' });
+    // location is [longitude, latitude]
+    //   ==============
+    const response = await axios.post(
+      process.env.API_MODEL_GEMINI + '/classifyFood',
+      { image_url },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    const { result } = response.data;
+
+    if (!result) return res.status(404).json({ message: 'Location not found!' });
+
+    const foods = await foodService.getFoodsFromLabels(result);
+    for (let i = 0; i < foods.length; i++) {
+      const distanceInfo = location
+        ? helper.getDistanceFromArrFromArr(location, foods[i]._doc.coordinates.coordinates)
+        : null;
+      foods[i] = { ...foods[i]._doc, distanceInfo };
+    }
+
+    if (foods?.length > 0)
+      return {
+        foods: foods,
+        isFood: true,
+      };
+    return null;
+  },
+
   suggestScheduleFoodTourForUser: async (req, res) => {
     try {
       const { location } = req.body;
@@ -40,49 +111,29 @@ const commonController = {
 
   predictImg: async (req, res) => {
     try {
-      const [locations, foods] = await Promise.all([this.predictLocation(req, res), this.predictFood(req, res)]);
+      const { location, image_url } = req.body;
+      const [locations, foods] = await Promise.all([
+        commonController.getLstLocationFromImg(location, image_url),
+        commonController.getLstFoodFromImg(location, image_url),
+      ]);
       return res.json({
-        locations: locations.locations || [],
-        foods: foods.foods || [],
-        isLocation: locations.isLocation,
-        isFood: foods.isFood,
+        locations: locations?.locations || [],
+        foods: foods?.foods || [],
+        isLocation: locations?.isLocation || false,
+        isFood: foods?.isFood || false,
       });
     } catch (error) {
       console.log({ message: error.message });
       return res.status(400).json({ message: 'Can not recognize this sense!' });
     }
   },
+
   predictLocation: async (req, res) => {
     try {
       const { location, image_url } = req.body;
-
-      if (!image_url) return res.status(404).json({ message: 'Please provided image!' });
-      // location is [longitude, latitude]
-      //   ==============
-      const response = await axios.post(
-        process.env.API_MODEL_GEMINI + '/classifyLocation',
-        { image_url },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      const { result } = response.data;
-
-      if (!result) return res.status(404).json({ message: 'Location not found!' });
-
-      const lstLocations = await locationService.getLocationsFromLabels(result);
-      for (let i = 0; i < lstLocations.length; i++) {
-        const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(location, lstLocations[i]._doc.coordinates.coordinates)
-          : null;
-        lstLocations[i] = { ...lstLocations[i]._doc, distanceInfo };
-      }
-
+      const locations = await this.getLstLocationFromImg(location, image_url);
       return res.json({
-        locations: lstLocations,
+        locations: locations,
         isLocation: true,
       });
     } catch (error) {
@@ -90,34 +141,11 @@ const commonController = {
       return res.status(400).json({ message: 'Can not recognize this sense!' });
     }
   },
+
   predictFood: async (req, res) => {
     try {
       const { location, image_url } = req.body;
-
-      if (!image_url) return res.status(404).json({ message: 'Please provided image!' });
-      // location is [longitude, latitude]
-      //   ==============
-      const response = await axios.post(
-        process.env.API_MODEL_GEMINI + '/classifyFood',
-        { image_url },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      const { result } = response.data;
-
-      if (!result) return res.status(404).json({ message: 'Location not found!' });
-
-      const foods = await foodService.getFoodsFromLabels(result);
-      for (let i = 0; i < foods.length; i++) {
-        const distanceInfo = location
-          ? helper.getDistanceFromArrFromArr(location, foods[i]._doc.coordinates.coordinates)
-          : null;
-        foods[i] = { ...foods[i]._doc, distanceInfo };
-      }
+      const foods = await this.getLstFoodFromImg(location, image_url);
 
       return res.json({
         foods,
