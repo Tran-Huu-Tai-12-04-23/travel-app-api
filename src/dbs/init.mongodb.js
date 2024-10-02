@@ -4,7 +4,6 @@ const {
 } = require('../config/config.mongodb');
 
 const connectString = `mongodb+srv://${host}/travelappsupport?retryWrites=true&w=majority&appName=${name}`;
-
 class Database {
   constructor() {
     this.connect();
