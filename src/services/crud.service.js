@@ -38,7 +38,6 @@ const crud = {
       if (!foodID || foodID === undefined) {
         throw new Error('id is not found');
       }
-      console.log(foodID);
       const food = await Food.findOne({ _id: foodID });
       if (food) {
         return await Food.deleteOne({ _id: foodID });
@@ -68,7 +67,6 @@ const crud = {
         throw new Error('id is not found');
       }
       const food = await Food.findOne({ _id: foodID });
-      console.log(foodID);
       if (food) {
         return food;
       }
