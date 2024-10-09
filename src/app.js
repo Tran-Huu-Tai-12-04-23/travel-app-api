@@ -22,13 +22,7 @@ app.get('/', (req, res) => {
   res.status(400).send('HUUTAI CI/CD fix issue');
 });
 
-app.use(
-  cors({
-    origin: 'http://localhost:3001',
-    credentials: true,
-  }),
-);
-
+app.use(cors());
 app.use('/', router);
 
 // init db

@@ -8,9 +8,9 @@ const featureRouter = require('./feature.router');
 const verifyToken = require('../middlewares/verifyToken.middleware');
 
 //test crud
-const crudRouter = require('./crud.route');
+const crudRouter = require('./api.route');
 router.use('/auth', authRouter);
-router.use('/crud', crudRouter);
+router.use('/api', crudRouter);
 
 router.use('/home', verifyToken, homeRouter);
 router.use('/location', verifyToken, locationRouter);
